@@ -4,8 +4,8 @@
     host    =   "127.0.0.1"
     port    =   "3306"
     user    =   "root"
-    pass    =   "123456"
-    name    =   "gfast_open"
+    pass    =   "G+2325=sqL"
+    name    =   "gf-erp"
     charset   = "utf8mb4" #数据库编码
     maxIdle      = "10" #连接池最大闲置的连接数
     maxOpen     = "10" #连接池最大打开的连接数
@@ -33,7 +33,7 @@
 
 #jwt配置
 [gToken]
-    CacheMode = 2
+    CacheMode = 1 #1无redis 2有redis
     CacheKey = "GToken:"
     Timeout = 0
     MaxRefresh = 0
