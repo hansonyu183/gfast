@@ -1,0 +1,20 @@
+CREATE TABLE `voucher` (
+  `id` int(11) NOT NULL  AUTO_INCREMENT ,
+  `no` varchar(20) NOT NULL DEFAULT '',
+  `date` varchar(8) NOT NULL DEFAULT '',
+  `type` varchar(3) NOT NULL DEFAULT '',
+  `note` varchar(255) NOT NULL DEFAULT '',
+  `state` char(2) NOT NULL DEFAULT '',
+  `create_date` varchar(8) DEFAULT '',
+  `create_user_id` int(11) NOT NULL DEFAULT 0,
+  `update_date` varchar(8) DEFAULT '',
+  `update_date_id` int(11) NOT NULL DEFAULT 0,
+  `check_date` varchar(8) DEFAULT '',
+  `check_user_id` int(11) NOT NULL DEFAULT 0,
+  `finish_date` varchar(8) DEFAULT '',
+  `finish_user_id` int(11) NOT NULL DEFAULT 0,
+  `abandon_date` varchar(8) DEFAULT '',
+  `abandon_user_id` int(11) NOT NULL DEFAULT 0,
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `no_UNIQUE` (`no`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;

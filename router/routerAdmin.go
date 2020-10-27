@@ -3,8 +3,8 @@ package router
 import (
 	"gfast/app/controller/admin"
 	"gfast/app/controller/common"
-	"gfast/hook"
-	"gfast/middleWare"
+	//"gfast/hook"
+	//"gfast/middleWare"
 	"github.com/gogf/gf/frame/g"
 	"github.com/gogf/gf/net/ghttp"
 )
@@ -19,9 +19,9 @@ func init() {
 	})
 
 	group.Group("/system", func(group *ghttp.RouterGroup) {
-		group.Middleware(middleWare.Auth) //后台权限验证
+		//group.Middleware(middleWare.Auth) //后台权限验证
 		//后台操作日志记录
-		group.Hook("/*", ghttp.HOOK_AFTER_OUTPUT, hook.OperationLog)
+		//group.Hook("/*", ghttp.HOOK_AFTER_OUTPUT, hook.OperationLog)
 
 		//文件上传
 		group.POST("/upload", new(admin.Upload))
