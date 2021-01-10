@@ -2,8 +2,8 @@ package eba
 
 import (
 	"gfast/erp/api"
+	"gfast/erp/model/eba"
 
-	"github.com/gogf/gf/database/gdb"
 	"github.com/gogf/gf/frame/g"
 )
 
@@ -15,28 +15,38 @@ type List struct {
 //model
 //数据结构
 type ListParams struct {
-	Id    string `p:"id" orm:"eba.id"`
-	Name  string `p:"name" orm:"eba.name"`
+	EbaId    string `p:"id" orm:"eba.id"`
+	EbaName  string `p:"name" orm:"eba.name"`
 	EmpId string `p:"emp_id" `
+}
+type Eba struct {
+	*eba.Entity
+	Emp Emp 
+}
+type Emp struct {
+	EmpId   string 
+	EmpName string 
 }
 
 func (lp *ListParams) GetCount(likeStr string) (int, error) {
-	m := g.DB("erp").Table("eba").LeftJoin("emp", "eba.emp_id=emp.id").OmitEmpty().Where(lp)
+	m := g.DB("erp").Table("eba").LeftJoin("emp", "eba.emp_id=emp.emp_id").OmitEmpty().Where(lp)
 	if likeStr != "" {
 		likeStr = "%" + likeStr + "%"
-		m = m.And("(eba.name like ? or eba.py like ?)", likeStr, likeStr)
+		m = m.And("(eba.eba_name like ? or eba.easy_code like ?)", likeStr, likeStr)
 	}
 	return m.Count()
 }
 
-func (lp *ListParams) GetList(pageNum, pageSize int, likeStr string) (list gdb.Result, err error) {
-	m := g.DB("erp").Table("eba").LeftJoin("emp", "eba.emp_id=emp.id").OmitEmpty().Where(lp)
-	m=m.Fields("eba.*,emp.name emp_name")
+func (lp *ListParams) GetList(pageNum, pageSize int, likeStr string) (list interface{}, err error) {
+	var ebas []*Eba
+	m := g.DB("erp").Table("eba").LeftJoin("emp", "eba.emp_id=emp.emp_id").OmitEmpty().Where(lp)
+	m = m.Fields("eba.*,emp.name emp_name")
 	if likeStr != "" {
 		likeStr = "%" + likeStr + "%"
-		m = m.And("(eba.name like ? or eba.py like ?)", likeStr, likeStr)
+		m = m.And("(eba.eba_name like ? or eba.easy_code like ?)", likeStr, likeStr)
 	}
-	return m.Page(pageNum, pageSize).All()
+	err = m.Page(pageNum, pageSize).Fields("eba.*,emp.emp_id ,emp.name emp_name").Scan(&ebas)
+	return ebas, err
 }
 
 func NewList() (c *List) {
@@ -47,4 +57,3 @@ func NewList() (c *List) {
 	}
 	return
 }
-

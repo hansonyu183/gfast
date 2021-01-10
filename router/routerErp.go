@@ -6,6 +6,8 @@ import (
 	"gfast/erp/api"
 	"gfast/erp/dict"
 	"gfast/erp/eba"
+	"gfast/erp/list"
+	"gfast/erp/vou"
 
 	"github.com/gogf/gf/frame/g"
 	"github.com/gogf/gf/net/ghttp"
@@ -20,9 +22,11 @@ func init() {
 		//后台操作日志记录
 		//group.Hook("/*", ghttp.HOOK_AFTER_OUTPUT, hook.OperationLog)
 		group.PATCH("/{.struct}/{.method}", api.NewWork())
+		group.REST("/dict", dict.NewDict())
 		group.REST("/eba/list", eba.NewList())
 		group.REST("/eba", eba.NewVou())
-		group.REST("/dict", dict.NewDict())
-
+		group.REST("/list/:name", list.New())
+		group.REST("/vou/:name/:id", vou.New())
 	})
+
 }
