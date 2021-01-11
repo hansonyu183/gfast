@@ -1,0 +1,67 @@
+<html>
+
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+    <meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no">
+    <title>Gfast开源框架演示站点</title>
+    <meta name="keywords" content="GO后台管理系统 GO权限管理系统 GO前后端分离框架">
+    <meta name="description"
+          content="Gfast前后端分离框架由奇讯科技团队研发，公司以以统计宏观数据库平台、挂图作战(督办)指挥平台为主打产品,为您提供网站建设、软件开发、APP软件定制。0874-3331516">
+    <meta name="SiteName" content="Gfast官方网站">
+    <meta name="SiteDomain" content="http://www.g-fast.cn">
+    <link rel="shortcut icon" type="image/x-icon" href="${.domain}image/favicon.ico">
+    <link rel="stylesheet" type="text/css" href="${.domain}cms/css/public.css"/>
+    <link rel="stylesheet" type="text/css" href="${.domain}cms/css/qxkj.css"/>
+    <link rel="stylesheet" type="text/css" href="${.domain}cms/css/font-awesome-4.7.0/css/font-awesome.min.css"/>
+    <script type="text/javascript" src="${.domain}js/jquery1.9.1/jquery.min.js"></script>
+</head>
+
+<body>
+<div class="site">
+    <div class="container">
+        ${template "left_nav" .}
+        <div class="content-wrapper">
+            <div class="recent-content">
+                <div class="showart">
+                    <div class="loccrumbs"><span>您当前的位置 ></span>
+                        <a href="${.domain}cms">首页 </a> >
+                        ${$breadMenus:=GetMenuBreadTree .menu}
+                        ${range $index,$menu:= $breadMenus}
+                            ${if eq $menu.cate_type 4}
+                            <!-- 单页栏目必定是导航尽头，所以只需要栏目名即可 -->
+                            <a href="javascript:;">${index $menu "name"}</a>
+                            ${else}
+                                <a href="${$.domain}cms/list/${$menu.id}">${index $menu "name"}</a> ${if lt (add $index 1) (len $breadMenus)}>${end}
+                            ${end}
+                        ${end}
+                    </div>
+                    <h3>
+                        ${if eq .menu.CateType 4}
+                            <a href="javascript:;">${$.menu.Name}</a>
+                        ${else}
+                            <a href="javascript:;">${.newsInfo.NewsTitle}</a>
+                        ${end}
+                    </h3>
+                    ${if ne .menu.CateType 4}
+                    <div class="footbar">
+                        <i class="footbar-like">来源：${.newsInfo.NewsSource} </i>
+                        <i class="footbar-like">作者：${.author.FValue} </i>
+                        <i class="footbar-like">发布时间：${.newsInfo.PublishedTime|timeFormatYear} </i>
+                        <i class="footbar-like"><a href="#">阅读(${.newsInfo.NewsHits})</a></i>
+                    </div>
+                    ${end}
+                    <div class="showcontent">
+                        ${if eq .menu.CateType 4}
+                        ${$.menu.CateContent}
+                        ${else}
+                        ${$.content.FValue}
+                        ${end}
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    ${template "sitebar" .}
+</div>
+</div>
+</body>

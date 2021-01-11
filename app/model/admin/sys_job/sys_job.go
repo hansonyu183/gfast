@@ -15,7 +15,7 @@ import (
 
 //添加操作请求参数
 type ReqAdd struct {
-	JobName        string `p:"job_mame" v:"required#任务名称不能为空"`
+	JobName        string `p:"job_name" v:"required#任务名称不能为空"`
 	JobParams      string `p:"job_params"` // 任务参数
 	JobGroup       string `p:"job_group" `
 	InvokeTarget   string `p:"invoke_target" v:"required#执行方法不能为空"`
@@ -105,7 +105,7 @@ func Edit(req *ReqEdit, userId uint64) (rows int64, err error) {
 	entity.Status = req.Status
 	entity.UpdateTime = gconv.Uint64(gtime.Timestamp())
 	entity.UpdateBy = gconv.Uint64(userId)
-	res, err := entity.Update()
+	res, err := Model.Save(entity)
 	if err != nil {
 		g.Log().Error(err)
 		err = gerror.New("修改任务失败")
@@ -194,7 +194,7 @@ func JobStart(job *Entity) error {
 	gcron.Start(job.InvokeTarget)
 	if job.MisfirePolicy == 1 {
 		job.Status = 0
-		job.Update()
+		Model.Save(job)
 	}
 	return nil
 }
@@ -211,6 +211,6 @@ func JobStop(job *Entity) error {
 		gcron.Remove(job.InvokeTarget)
 	}
 	job.Status = 1
-	job.Update()
+	Model.Save(job)
 	return nil
 }

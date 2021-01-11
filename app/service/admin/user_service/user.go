@@ -15,6 +15,7 @@ import (
 	"gfast/boot"
 	"gfast/library/service"
 	"gfast/library/utils"
+
 	"github.com/gogf/gf/errors/gerror"
 	"github.com/gogf/gf/frame/g"
 	"github.com/gogf/gf/net/ghttp"
@@ -46,7 +47,7 @@ func UpdatePwd(r *ghttp.Request, data *UpdatePwdReq) error {
 		return err
 	}
 
-	OldPassword := utils.EncryptCBC(gconv.String(data.OldPassword), utils.AdminCbcPublicKey)
+	OldPassword := service.EncryptData(data.OldPassword)
 
 	if OldPassword != currentUser["user_password"].(string) {
 		return errors.New("原始密码错误!")
@@ -140,7 +141,7 @@ func GetAdminList(req *user.SearchReq) (total, page int, userList []*user.Entity
 	if req.DeptId != "" {
 		depts, err = sys_dept.GetList(&sys_dept.SearchParams{Status: "1"})
 		if err != nil {
-			g.Log().Debug(err)
+			g.Log().Error(err)
 			err = gerror.New("获取部门信息失败")
 			return
 		}
@@ -167,6 +168,9 @@ func GetAdminRole(userId uint64, allRoleList []*role.Entity) (roles []*role.Enti
 			if id == v.Id {
 				roles = append(roles, v)
 			}
+		}
+		if len(roles) == len(roleIds) {
+			break
 		}
 	}
 	return
@@ -281,6 +285,32 @@ func ChangeUserStatus(req *user.StatusReq) error {
 
 func ResetUserPwd(req *user.ResetPwdReq) error {
 	//密码加密
-	req.Password = utils.EncryptCBC(gconv.String(req.Password), utils.AdminCbcPublicKey)
+	req.Password = service.EncryptData(req.Password)
 	return user.ResetUserPwd(req)
+}
+
+func GetPermissions(roleIds []uint) ([]string, error) {
+	//获取角色对应的菜单id
+	enforcer, err := casbin_adapter_service.GetEnforcer()
+	if err != nil {
+		return nil, err
+	}
+	menuIds := map[int64]int64{}
+	for _, roleId := range roleIds {
+		//查询当前权限
+		gp := enforcer.GetFilteredPolicy(0, fmt.Sprintf("g_%d", roleId))
+		for _, p := range gp {
+			mid := gconv.Int64(gstr.SubStr(p[1], 2))
+			menuIds[mid] = mid
+		}
+	}
+	//获取所有开启的按钮
+	allButtons, err := auth_service.GetIsButtonStatusList()
+	userButtons := make([]string, 0, len(allButtons))
+	for _, button := range allButtons {
+		if _, ok := menuIds[gconv.Int64(button.Id)]; gstr.Equal(button.Condition, "nocheck") || ok {
+			userButtons = append(userButtons, button.Name)
+		}
+	}
+	return userButtons, nil
 }

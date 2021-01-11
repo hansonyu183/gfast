@@ -74,7 +74,7 @@ func EditSave(req *EditReq, userId uint64) (int64, error) {
 	entity.Remark = req.Remark
 	entity.UpdateTime = gconv.Uint64(gtime.Timestamp())
 	entity.UpdateBy = gconv.Uint(userId)
-	result, err := entity.Update()
+	result, err := Model.Save(entity)
 	if err != nil {
 		g.Log().Error(err)
 		return 0, gerror.New("修改失败")
@@ -121,7 +121,7 @@ func SelectListByPage(req *SelectPageReq) (total, page int, list []*Entity, err 
 			model = model.Where("config_name like ?", "%"+req.ConfigName+"%")
 		}
 		if req.ConfigType != "" {
-			model = model.Where("status = ", gconv.Int(req.ConfigType))
+			model = model.Where("config_type = ", gconv.Int(req.ConfigType))
 		}
 		if req.ConfigKey != "" {
 			model = model.Where("config_key like ?", "%"+req.ConfigKey+"%")

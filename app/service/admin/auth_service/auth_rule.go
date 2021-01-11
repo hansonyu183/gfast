@@ -7,7 +7,8 @@ import (
 	"gfast/app/model/admin/user"
 	"gfast/app/model/admin/user_post"
 	"gfast/app/service/casbin_adapter_service"
-	"gfast/library/utils"
+	"gfast/library/service"
+
 	"github.com/gogf/gf/database/gdb"
 	"github.com/gogf/gf/errors/gerror"
 	"github.com/gogf/gf/frame/g"
@@ -30,7 +31,7 @@ func GetIsMenuList() ([]*auth_rule.Entity, error) {
 	return gList, nil
 }
 
-//获取isMenu=1且status=1的菜单列表
+//获取isMenu=0|1且status=1的菜单列表
 func GetIsMenuStatusList() ([]*auth_rule.Entity, error) {
 	list, err := GetMenuList()
 	if err != nil {
@@ -39,6 +40,21 @@ func GetIsMenuStatusList() ([]*auth_rule.Entity, error) {
 	var gList = make([]*auth_rule.Entity, 0, len(list))
 	for _, v := range list {
 		if (v.MenuType == 0 || v.MenuType == 1) && v.Status == 1 {
+			gList = append(gList, v)
+		}
+	}
+	return gList, nil
+}
+
+//获取所有按钮isMenu=2 且status=1的菜单列表
+func GetIsButtonStatusList() ([]*auth_rule.Entity, error) {
+	list, err := GetMenuList()
+	if err != nil {
+		return nil, err
+	}
+	var gList = make([]*auth_rule.Entity, 0, len(list))
+	for _, v := range list {
+		if v.MenuType == 2 && v.Status == 1 {
 			gList = append(gList, v)
 		}
 	}
@@ -80,7 +96,6 @@ func GetMenuListSearch(req *auth_rule.ReqSearch) (list []*auth_rule.Entity, err 
 		}
 		list = tmpList
 	}
-	g.Log().Debug(list)
 	return
 }
 
@@ -183,7 +198,7 @@ func DeleteRoleRule(roleId int) (err error) {
 //添加管理员操作
 func AddUser(req *user.AddUserReq) (InsertId int64, err error) {
 	//密码加密
-	req.Password = utils.EncryptCBC(gconv.String(req.Password), utils.AdminCbcPublicKey)
+	req.Password = service.EncryptData(req.Password)
 	return user.Add(req)
 }
 
