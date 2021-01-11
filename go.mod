@@ -16,6 +16,8 @@ require (
 	github.com/swaggo/swag v1.6.9
 	golang.org/x/net v0.0.0-20201024042810-be3efd7ff127 // indirect
 	golang.org/x/tools v0.0.0-20201023174141-c8cfbd0f21e6 // indirect
+	gorm.io/driver/mysql v1.0.3
+	gorm.io/gorm v1.20.11
 )
 
 go 1.14
