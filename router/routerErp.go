@@ -3,10 +3,15 @@ package router
 import (
 	//"gfast/hook"
 	//"gfast/middleWare"
+	//ap "gfast/app/api"
 	"gfast/erp/api"
 	"gfast/erp/dict"
 	"gfast/erp/eba"
+	"gfast/erp/info"
 	"gfast/erp/list"
+	"gfast/erp/test"
+
+	"gfast/erp/query"
 	"gfast/erp/vou"
 
 	"github.com/gogf/gf/frame/g"
@@ -27,6 +32,12 @@ func init() {
 		group.REST("/eba", eba.NewVou())
 		group.REST("/list/:name", list.New())
 		group.REST("/vou/:name/:id", vou.New())
+		group.REST("/info/:name", info.Info)
+		group.REST("/test/:sub/:name", test.Query)
+		group.REST("/query/edtIo", query.EdtIo)
+		group.REST("/query/edtIoSum", query.EdtIoSum)
+		group.REST("/query/edtIoGroup", query.EdtIoGroup)
+		group.REST("/query/edtIoGroupSum", query.EdtIoGroupSum)
 	})
 
 }

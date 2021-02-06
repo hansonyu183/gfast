@@ -1,31 +1,31 @@
 package eba
 
 import (
+	"gfast/app/model"
 	"gfast/erp/api"
-	"gfast/erp/model/eba"
 
 	"github.com/gogf/gf/frame/g"
 )
 
-//客户资料管理
+// List 客户资料管理
 type List struct {
 	*api.List
 }
 
-//model
-//数据结构
+// ListParams 数据结构
 type ListParams struct {
-	EbaId    string `p:"id" orm:"eba.id"`
-	EbaName  string `p:"name" orm:"eba.name"`
-	EmpId string `p:"emp_id" `
+	EbaId   string `p:"id" orm:"eba.id"`
+	EbaName string `p:"name" orm:"eba.name"`
+	EmpId   string `p:"emp_id" `
 }
+
 type Eba struct {
-	*eba.Entity
-	Emp Emp 
+	*model.Eba
+	Emp Emp
 }
 type Emp struct {
-	EmpId   string 
-	EmpName string 
+	EmpId   string
+	EmpName string
 }
 
 func (lp *ListParams) GetCount(likeStr string) (int, error) {

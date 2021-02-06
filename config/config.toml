@@ -1,9 +1,8 @@
 # 数据库连接
 [database]
-<<<<<<< HEAD
     [[database.default]]
         type    =   "mysql"
-        host    =   "192.168.1.111" #"127.0.0.1"
+        host    =   "127.0.0.1." #"127.0.0.1."
         port    =   "3306"
         user    =   "root"
         pass    =   "G+2325=sqL"
@@ -15,7 +14,7 @@
         debug  = true
     [[database.erp]]
         type    =   "mysql"
-        host    =   "192.168.1.111" #"127.0.0.1"
+        host    =   "127.0.0.1." #"127.0.0.1."
         port    =   "3306"
         user    =   "root"
         pass    =   "G+2325=sqL"
@@ -25,24 +24,8 @@
         maxOpen     = "10" #连接池最大打开的连接数
         maxLifetime  = "30" #(单位秒)连接对象可重复使用的时间长度
         debug  = true
-        gormDsn = "root:G+2325=sqL@tcp(127.0.0.1:3306)/kyoitdb?charset=utf8mb4&parseTime=True&loc=Local"
-=======
-    type    =   "mysql"
-    host    =   "127.0.0.1"
-    port    =   "3306"
-    user    =   "root"
-    pass    =   "123456"
-    name    =   "gfast_open"
-    charset   = "utf8mb4" #数据库编码
-    maxIdle      = "10" #连接池最大闲置的连接数
-    maxOpen     = "10" #连接池最大打开的连接数
-    maxLifetime  = "30" #(单位秒)连接对象可重复使用的时间长度
-    debug  = true
-    path   = "data/log/sql"
-    level  = "all"
-    stdout = true
+        gormDsn = "root:G+2325=sqL@tcp(127.0.0.1.:3306)/kyerp?charset=utf8mb4&parseTime=True&loc=Local"
 
->>>>>>> upstream/master
 #web服务器配置
 [server]
     Address          = ":8200"
@@ -56,11 +39,11 @@
     SessionMaxAge    = "24h"
     DumpRouterMap    = true
     NameToUriType    = 3
-
+    logStdout        = true  
 
 # Redis数据库配置
 [redis]
-    default = "127.0.0.1:6379,1"
+    default = "127.0.0.1.:6379,1"
 
 #jwt配置
 [gToken]
@@ -86,15 +69,10 @@
 
 #后台相关配置
 [adminInfo]
-<<<<<<< HEAD
-    notCheckAuthAdminIds = [1,31]  #无需验证后台权限的用户id
-    pageNum = 10  #后台列表分页长度
-=======
     notCheckAuthAdminIds = [1,2,31]  #无需验证后台权限的用户id
     pageNum = 10  #后台列表分页长度
     dataDir =  "./data"  #数据目录
     encryptKey = "HqmP1KLMuz09Q0Bu"  #后台加密
->>>>>>> upstream/master
 
 # Gen
 [gen]
@@ -110,3 +88,11 @@
     paths       = ["./template"]
     defaultFile = "index.html"
     delimiters  =  ["${", "}"]
+
+#gfcli配置
+[gfcli]
+    [[gfcli.gen.dao]]
+        link   = "mysql:root:G+2325=sqL@tcp(127.0.0.1.:3306)/kyerp?charset=utf8mb4&parseTime=True&loc=Local"
+        group  = ""
+        prefix = ""
+        tables = "" 

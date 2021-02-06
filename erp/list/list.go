@@ -1,8 +1,7 @@
 package list
 
 import (
-	"gfast/erp/def"
-
+	"gfast/erp/boot"
 	"gfast/library/response"
 	"gfast/library/service"
 
@@ -21,7 +20,6 @@ type QueryParams struct {
 	PageSize int
 	FormData string
 }
-
 
 type ListCtrl struct {
 }
@@ -56,7 +54,7 @@ func (ctrl *ListCtrl) Delete(r *ghttp.Request) {
 }
 
 func Del(listName string, para map[string]interface{}) error {
-	li := def.ListMap()[listName]
+	li := boot.ListMap()[listName]
 	delTables := strings.Split(li.Del, ",")
 	delete(para, "name")
 	return g.DB("erp").Transaction(func(tx *gdb.TX) error {
@@ -77,7 +75,7 @@ func Del(listName string, para map[string]interface{}) error {
 func GetList(listName string, params QueryParams) (total, page int, list interface{}, err error) {
 	pageNum := params.PageNum
 	pageSize := params.PageSize
-	li := def.ListMap()[listName]
+	li := boot.ListMap()[listName]
 	formData := gconv.Map(params.FormData)
 	likeStr := gconv.String(formData["likeStr"])
 	delete(formData, "likeStr")

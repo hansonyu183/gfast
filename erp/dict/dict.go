@@ -14,8 +14,8 @@ type Dict struct {
 
 func NewDict() (o *Dict) {
 	ds := make(map[string]*gdb.Model)
-	ds["emp"]= g.DB("erp").Table("emp").Fields("id,name,py")
-	ds["eba"]= g.DB("erp").Table("eba").Fields("id,name,py")
+	ds["emp"] = g.DB("erp").Table("emp").Fields("id,name,py")
+	ds["eba"] = g.DB("erp").Table("eba").Fields("id,name,py")
 	o = &Dict{
 		&api.Dict{
 			DictMods: ds,
