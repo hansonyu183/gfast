@@ -1,144 +1,71 @@
 package vou
 
 import (
+	"gfast/erp/boot"
+
 	"gfast/library/response"
 
-	"github.com/gogf/gf/database/gdb"
+	"github.com/gogf/gf/errors/gerror"
 	"github.com/gogf/gf/frame/g"
 	"github.com/gogf/gf/net/ghttp"
-	"github.com/gogf/gf/util/gvalid"
 )
 
-type VouCtrl struct {
+// Vou API管理对象
+var Vou = &vouData{}
+
+type vouData struct {
 }
 
-type VouData struct {
-	Main map[string]interface{}
-	Item map[string]interface{}
-	Sub  map[string]interface{}
+type VouParam struct {
 }
 
 //controller
-func (ctrl *VouCtrl) Get(r *ghttp.Request) {
-	vouData, err := GetVou(r.GetString("name"), r.GetInt("id"))
+func (ctrl *vouData) Get(r *ghttp.Request) {
+	vouDataID := r.GetInt("id")
+	data, err := ctrl.getData(vouDataID)
 	if err != nil {
 		response.FailJson(true, r, err.Error())
 	}
-	result := g.Map{
-		"data": vouData,
-	}
-	response.SusJson(true, r, "成功", result)
-
+	response.SusJson(true, r, "成功", data)
 }
 
-func (ctrl *VouCtrl) Delete(r *ghttp.Request) {
-	if err := DelVou(r.GetString("name"), r.GetInt("id")); err != nil {
-		response.FailJson(true, r, "删除失败")
-	}
-	response.SusJson(true, r, "删除成功")
-}
-
-func (ctrl *VouCtrl) Post(r *ghttp.Request) {
-	var vouData VouData
-	if err := r.Parse(&vouData); err != nil {
-		response.FailJson(true, r, err.(*gvalid.Error).FirstString())
-	}
-	if err := CreateVou(r.GetString("name"), &vouData); err != nil {
-		response.FailJson(true, r, "新增失败")
-	}
-	response.SusJson(true, r, "新增成功")
-}
-
-func (ctrl *VouCtrl) Put(r *ghttp.Request) {
-	var vouData VouData
-	if err := r.Parse(&vouData); err != nil {
-		response.FailJson(true, r, err.(*gvalid.Error).FirstString())
-	}
-	if err := CreateVou(r.GetString("name"), &vouData); err != nil {
-		response.FailJson(true, r, "新增失败")
-	}
-	response.SusJson(true, r, "新增成功")
-}
-
-func CreateVou(name string, vouData *VouData) error {
-	return g.DB("erp").Transaction(func(tx *gdb.TX) error {
-		db := g.DB("erp")
-		if _, err := db.Table(name).Data(vouData.Main).Insert(); err != nil {
-			return err
-		}
-		if _, err := db.Table(name + "_item").Data(vouData.Item).Insert(); err != nil {
-			return err
-		}
-		if _, err := db.Table(name + "_sub").Data(vouData.Sub).Insert(); err != nil {
-			return err
-		}
-		return nil
-	})
-}
-
-func UpdateVou(name string, vouData *VouData) error {
-	return g.DB("erp").Transaction(func(tx *gdb.TX) error {
-		db := g.DB("erp")
-		if _, err := db.Table(name).Data(vouData.Main).Save(); err != nil {
-			return err
-		}
-		if _, err := db.Table(name + "_item").Data(vouData.Item).Save(); err != nil {
-			return err
-		}
-		if _, err := db.Table(name + "_sub").Data(vouData.Sub).Save(); err != nil {
-			return err
-		}
-		return nil
-	})
-}
-
-func DelVou(name string, id int) error {
-	return g.DB("erp").Transaction(func(tx *gdb.TX) error {
-		db := g.DB("erp")
-		if _, err := db.Table(name).Delete("voucher_id", id); err != nil {
-			return err
-		}
-		if _, err := db.Table(name+"_item").Delete("voucher_id", id); err != nil {
-			return err
-		}
-		if _, err := db.Table(name+"_sub").Delete("voucher_id", id); err != nil {
-			return err
-		}
-		return nil
-	})
-}
-
-//service
+//getData
 /**
-获取列表数据
+获取明细
 */
-func GetVou(name string, id int) (vouData map[string]interface{}, err error) {
-	var main gdb.Record
-	var item, sub gdb.Result
-	err = g.DB("erp").Transaction(func(tx *gdb.TX) (err error) {
-		db := g.DB("erp")
-		if main, err = db.Table(name).One("voucher_id", id); err != nil {
-			return err
-		}
-		if item, err = db.Table(name+"_item").All("voucher_id", id); err != nil {
-			return err
-		}
-		if sub, err = db.Table(name+"_sub").All("voucher_id", id); err != nil {
-			return err
-		}
-		return nil
-	})
+
+func (ctrl *vouData) getData(vouDataID int) (data interface{}, err error) {
+	vr := boot.ErpDB.Table("vr")
+	vMain := boot.ErpDB.Table("vr_main")
+	vItemAmo := boot.ErpDB.Table("vr_item_amo")
+	vItemNum := boot.ErpDB.Table("vr_item_num")
+
+	vrData, err := vr.Where("vid", vouDataID).One()
 	if err != nil {
-		return nil, err
+		g.Log().Error(err)
+		err = gerror.New("获取数据失败")
+		return
 	}
-	vouData = g.Map{
-		"main": main,
-		"item": item,
-		"sub":  sub,
+	vMainData, err := vMain.Where("vid", vouDataID).One()
+	vItemAmoData, err := vItemAmo.Where("vid", vouDataID).All()
+	vItemNumData, err := vItemNum.Where("vid", vouDataID).All()
+	fmData := g.Map{}
+	if vrData != nil {
+		fmData["vr"] = vrData
+	}
+	if vMainData != nil {
+		fmData["main"] = vMainData
+	}
+	tbData := g.Map{}
+	if vItemAmoData != nil {
+		tbData["amoItem"] = vItemAmoData
+	}
+	if vItemNumData != nil {
+		tbData["numItem"] = vItemNumData
+	}
+	data = g.Map{
+		"forms":  fmData,
+		"tables": tbData,
 	}
 	return
-}
-
-func New() *VouCtrl {
-	return &VouCtrl{}
 }

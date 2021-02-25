@@ -6,6 +6,7 @@ package auth_rule
 
 import (
 	"database/sql"
+
 	"github.com/gogf/gf/database/gdb"
 )
 
@@ -29,6 +30,8 @@ type Entity struct {
 	IsFrame    uint   `orm:"is_frame"    json:"is_frame"`    // 是否外链 1是 0否
 	ModuleType string `orm:"module_type" json:"module_type"` // 所属模块
 	ModelId    uint   `orm:"model_id"    json:"model_id"`    // 模型ID
+	Props      bool   `p:"props"  json:"props"`              //是否路由传参
+	Redirect   string `orm:"redirect" json:"redirect"`       // 重定向
 }
 
 // OmitEmpty sets OPTION_OMITEMPTY option for the model, which automatically filers

@@ -3,6 +3,7 @@ package auth_rule
 import (
 	"gfast/app/service/cache_service"
 	"gfast/library/utils"
+
 	"github.com/gogf/gf/errors/gerror"
 	"github.com/gogf/gf/frame/g"
 	"github.com/gogf/gf/os/gtime"
@@ -11,7 +12,7 @@ import (
 
 //菜单对象
 type MenuReq struct {
-	MenuType   uint   `p:"menuType"  v:"min:0|max:2#菜单类型最小值为:min|菜单类型最大值为:max"`
+	MenuType   uint   `p:"menuType"  v:"min:0|max:3#菜单类型最小值为:min|菜单类型最大值为:max"`
 	Pid        uint   `p:"parentId"  v:"min:0"`
 	Name       string `p:"name" v:"required#请填写规则名称"`
 	Title      string `p:"menuName"  v:"required|length:1,100#请填写标题|标题长度在:min到:max位"`
@@ -24,6 +25,8 @@ type MenuReq struct {
 	Path       string `p:"path"`
 	Component  string `p:"component" v:"required-if:menuType,1#组件路径不能为空"`
 	IsFrame    uint   `p:"is_frame"`
+	Props      bool   `p:"props" `
+	Redirect   string `p:"redirect" `
 }
 
 //获取所有菜单
@@ -94,7 +97,8 @@ func Add(req *MenuReq) (err error, insertId int64) {
 	entity.Createtime = gconv.Uint(now)
 	entity.Updatetime = gconv.Uint(now)
 	entity.Weigh = req.Weigh
-
+	entity.Props = req.Props
+	entity.Redirect = req.Redirect
 	res, e := entity.Insert()
 	err = e
 	if err != nil {
@@ -124,6 +128,8 @@ func Edit(req *MenuReq, id int) (err error, rows int64) {
 	entity.IsFrame = req.IsFrame
 	entity.Pid = req.Pid
 	entity.Weigh = req.Weigh
+	entity.Props = req.Props
+	entity.Redirect = req.Redirect
 	res, e := Model.Save(entity)
 	err = e
 	if err != nil {

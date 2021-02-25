@@ -19,7 +19,7 @@ func CovMapKeyToArray(mapStr string) (keyStrArray []string) {
 	return
 }
 
-// ParamsSQL 转换struct 到 sql存储过程的能数
+// ParamsSQL 转换struct 到 sql存储过程的参数数
 func ParamsSQL(params interface{}) (sql string) {
 	t := reflect.TypeOf(params)
 	v := reflect.ValueOf(params)

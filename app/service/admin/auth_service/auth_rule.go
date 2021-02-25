@@ -39,7 +39,7 @@ func GetIsMenuStatusList() ([]*auth_rule.Entity, error) {
 	}
 	var gList = make([]*auth_rule.Entity, 0, len(list))
 	for _, v := range list {
-		if (v.MenuType == 0 || v.MenuType == 1) && v.Status == 1 {
+		if (v.MenuType == 0 || v.MenuType == 1 || v.MenuType == 3) && v.Status == 1 {
 			gList = append(gList, v)
 		}
 	}

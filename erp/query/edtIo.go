@@ -68,7 +68,6 @@ func (ctrl *edtIo) getData(params edtIoParam) (data interface{}, err error) {
 	params.PageNum = pageSize * (page - 1)
 	params.PageSize = pageSize
 	sql := "call " + ctrl.name + ctrl.paramsSQL(params)
-	fmt.Println(sql)
 	r, err := boot.ErpDB.GetAll(sql)
 	if err != nil {
 		g.Log().Error(err)

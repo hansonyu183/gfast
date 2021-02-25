@@ -2,6 +2,7 @@ package response
 
 import (
 	"gfast/library/utils"
+
 	"github.com/gogf/gf/frame/g"
 	"github.com/gogf/gf/net/ghttp"
 	"github.com/gogf/gf/os/gview"
@@ -10,7 +11,7 @@ import (
 )
 
 const (
-	SuccessCode int = 0
+	SuccessCode int = 200
 	ErrorCode   int = -1
 )
 

@@ -1,7 +1,6 @@
 package restful
 
 import (
-	"fmt"
 	"gfast/library/response"
 
 	"gfast/library/service"
@@ -29,7 +28,6 @@ func (rf *RfGet) Get(r *ghttp.Request) {
 	if err := r.Parse(rf.GetParams); err != nil {
 		response.FailJson(true, r, err.(*gvalid.Error).FirstString())
 	}
-	fmt.Printf("%+v\n", rf.GetParams)
 	pg := new(ListPage)
 	pg.PageNum = r.GetInt("pageNum")
 	pg.PageSize = r.GetInt("pageSize")

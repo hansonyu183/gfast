@@ -2,7 +2,7 @@
 [database]
     [[database.default]]
         type    =   "mysql"
-        host    =   "127.0.0.1." #"127.0.0.1."
+        host    =   "127.0.0.1" #"127.0.0.1"
         port    =   "3306"
         user    =   "root"
         pass    =   "G+2325=sqL"
@@ -14,7 +14,7 @@
         debug  = true
     [[database.erp]]
         type    =   "mysql"
-        host    =   "127.0.0.1." #"127.0.0.1."
+        host    =   "127.0.0.1" #"127.0.0.1"
         port    =   "3306"
         user    =   "root"
         pass    =   "G+2325=sqL"
@@ -24,7 +24,7 @@
         maxOpen     = "10" #连接池最大打开的连接数
         maxLifetime  = "30" #(单位秒)连接对象可重复使用的时间长度
         debug  = true
-        gormDsn = "root:G+2325=sqL@tcp(127.0.0.1.:3306)/kyerp?charset=utf8mb4&parseTime=True&loc=Local"
+        gormDsn = "root:G+2325=sqL@tcp(127.0.0.1:3306)/kyerp?charset=utf8mb4&parseTime=True&loc=Local"
 
 #web服务器配置
 [server]
@@ -43,7 +43,7 @@
 
 # Redis数据库配置
 [redis]
-    default = "127.0.0.1.:6379,1"
+    default = "127.0.0.1:6379,1"
 
 #jwt配置
 [gToken]
@@ -69,7 +69,7 @@
 
 #后台相关配置
 [adminInfo]
-    notCheckAuthAdminIds = [1,2,31]  #无需验证后台权限的用户id
+    notCheckAuthAdminIds = [1]  #无需验证后台权限的用户id
     pageNum = 10  #后台列表分页长度
     dataDir =  "./data"  #数据目录
     encryptKey = "HqmP1KLMuz09Q0Bu"  #后台加密
@@ -92,7 +92,7 @@
 #gfcli配置
 [gfcli]
     [[gfcli.gen.dao]]
-        link   = "mysql:root:G+2325=sqL@tcp(127.0.0.1.:3306)/kyerp?charset=utf8mb4&parseTime=True&loc=Local"
+        link   = "mysql:root:G+2325=sqL@tcp(127.0.0.1:3306)/kyerp?charset=utf8mb4&parseTime=True&loc=Local"
         group  = ""
         prefix = ""
         tables = "" 

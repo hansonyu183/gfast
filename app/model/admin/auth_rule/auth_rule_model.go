@@ -6,10 +6,11 @@ package auth_rule
 
 import (
 	"database/sql"
+	"time"
+
 	"github.com/gogf/gf/database/gdb"
 	"github.com/gogf/gf/frame/g"
 	"github.com/gogf/gf/frame/gmvc"
-	"time"
 )
 
 // arModel is a active record design model for table auth_rule operations.
@@ -42,6 +43,8 @@ var (
 		IsFrame    string // 是否外链 1是 0否
 		ModuleType string // 所属模块
 		ModelId    string // 模型ID
+		Props      string
+		Redirect   string // 重定向
 	}{
 		Id:         "id",
 		Pid:        "pid",
@@ -61,6 +64,8 @@ var (
 		IsFrame:    "is_frame",
 		ModuleType: "module_type",
 		ModelId:    "model_id",
+		Props:      "props",
+		Redirect:   "redirect",
 	}
 )
 
