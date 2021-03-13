@@ -5,11 +5,10 @@ import (
 	//"gfast/middleWare"
 	//ap "gfast/app/api"
 	"gfast/erp/api"
-	"gfast/erp/desc"
 	"gfast/erp/doc"
-	"gfast/erp/list"
 	"gfast/erp/query"
-	"gfast/erp/vou"
+	"gfast/erp/ui"
+	"gfast/erp/vr"
 
 	"github.com/gogf/gf/frame/g"
 	"github.com/gogf/gf/net/ghttp"
@@ -24,14 +23,18 @@ func init() {
 		//后台操作日志记录
 		//group.Hook("/*", ghttp.HOOK_AFTER_OUTPUT, hook.OperationLog)
 		group.PATCH("/{.struct}/{.method}", api.NewWork())
-		group.REST("/list/:name", list.New())
-		group.REST("/vou/:id", vou.Vou)
+
+		group.REST("/ui/desc/:user", ui.Desc)
+		group.REST("/ui/opt/*name", ui.Opt)
+		group.REST("/ui/auth/:user", ui.Auth)
+		group.REST("/ui/dict/", ui.Dict)
+
+		group.REST("/vr/:type/:id", vr.Vr)
+		group.REST("/vrList/:type", vr.VrList)
+
 		group.REST("/doc/:type/:id", doc.Doc)
-		group.REST("/docAct/:type/:id/:act", doc.DocAct)
-		group.REST("/desc/:user", desc.Desc)
-		group.REST("/dbDesc/:table", desc.DBDesc)
 		group.REST("/docList/:type", doc.DocList)
-		group.REST("/docOption/:type", doc.DocOption)
+		group.REST("/docSub/:docType/:docID", doc.DocSub)
 		group.REST("/query/edtIo", query.EdtIo)
 		group.REST("/query/edtIoSum", query.EdtIoSum)
 		group.REST("/query/edtIoGroup", query.EdtIoGroup)

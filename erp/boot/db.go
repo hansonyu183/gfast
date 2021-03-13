@@ -1,7 +1,6 @@
 package boot
 
 import (
-	"database/sql"
 	"strings"
 
 	"github.com/gogf/gf/database/gdb"
@@ -76,26 +75,26 @@ func (eb *EDB) GetTbDefaultData(tbName string) (data gdb.Record, err error) {
 	if err != nil {
 		return nil, err
 	}
-	//data = make(gdb.Record)
-	sql := "select "
+	data = make(gdb.Record)
+	//sql := "select "
 	for _, v := range desc {
+		data[v.Field] = nil
 		//data[v.Field] = gvar.New(v.Default, true)
-		sql += "default(" + v.Field + ") as " + v.Field + ","
+		//sql += "default(" + v.Field + ") as " + v.Field + ","
 	}
-	sql = strings.TrimSuffix(sql, ",")
-	sql += " from " + tbName + " limit 1"
-	data, err = eb.GetOne(sql)
+	//sql = strings.TrimSuffix(sql, ",")
+	//sql += " from " + tbName + " limit 1"
+	//	data, err = eb.GetOne(sql)
 	return
 }
 
 func (eb *EDB) GeTbFkSub(tbName string, id int) (tbData gdb.Record, fksData map[string]gdb.Result, subsData map[string]gdb.Result, err error) {
 	err = eb.Transaction(func(tx *gdb.TX) error {
 		if id == 0 { //新建记录
-			tbData, err = eb.GetTbDefaultData(tbName)
-		} else {
-			tbData, err = tx.Table(tbName).Where("id", id).One()
+			tbData, err = eb.GetTbDefaultData(tbName)			
+			return nil
 		}
-		if err != nil {
+		if tbData, err = tx.Table(tbName).Where("id", id).One(); err != nil {
 			return err
 		}
 		if fksData, err = eb.GetFKData(tx, tbName, id); err != nil {
@@ -117,15 +116,10 @@ func (eb *EDB) GetFKData(tx *gdb.TX, table string, id int) (fksData map[string]g
 	fksData = make(map[string]gdb.Result)
 	for _, v := range assTbs {
 		var tagIds gdb.Result
-		if id == 0 {
-			tagIds = nil
-		} else {
-			tagIds, err = tx.Table(v.MiddelTableName).Fields(v.TargetTableName+"_id").Where(v.MainTableKey, id).All()
-		}
+		tagIds, err = tx.Table(v.MiddelTableName).Fields(v.TargetTableName+"_id").Where(v.MainTableKey, id).All()
 		if err == nil {
 			fksData[v.MiddelTableName] = tagIds
 		}
-		//}
 	}
 	return
 }
@@ -133,75 +127,15 @@ func (eb *EDB) GetFKData(tx *gdb.TX, table string, id int) (fksData map[string]g
 func (eb *EDB) GetSubData(tx *gdb.TX, table string, id int) (subsData map[string]gdb.Result, err error) {
 	assTbs, err := eb.GetSubTbsName(table)
 	if err != nil {
-		return
+		return nil, err
 	}
-
 	subsData = make(map[string]gdb.Result)
 	for _, v := range assTbs {
 		var r gdb.Result
-		if id == 0 {
-			r = nil
-		} else {
-			r, err = tx.Table(v.TargetTableName).Where(v.MainTableKey, id).All()
-		}
+		r, err = tx.Table(v.TargetTableName).Where(v.MainTableKey, id).All()
 		if err == nil {
 			subsData[v.TargetTableName] = r
 		}
 	}
 	return
-}
-
-func (eb *EDB) DelTbFkSub(table string, id int) (result sql.Result, err error) {
-	err = eb.Transaction(func(tx *gdb.TX) error {
-		result, err = tx.Table(table).Delete("id", id)
-		if err != nil {
-			return err
-		}
-		if err = eb.DelFKData(tx, table, id); err != nil {
-			return nil
-		}
-		if err = eb.DelSubData(tx, table, id); err != nil {
-			return err
-		}
-		return err
-	})
-	if err != nil {
-		return
-	}
-	return
-}
-
-func (eb *EDB) DelFKData(tx *gdb.TX, table string, id int) (err error) {
-	preFix := "fk_" + table + "_"
-	sql := "SELECT TABLE_NAME FROM	information_schema.TABLES WHERE	table_schema = 'kyerp'	AND TABLE_NAME LIKE '" + preFix + "%'"
-	tbs, err := eb.GetArray(sql)
-	if err != nil {
-		return
-	}
-	for _, val := range tbs {
-		fkTb := val.String()
-		_, err := tx.Table(fkTb).Delete(table+"_id", id)
-		if err != nil {
-			continue
-		}
-
-	}
-	return err
-}
-
-func (eb *EDB) DelSubData(tx *gdb.TX, table string, id int) (err error) {
-	preFix := table + "_"
-	sql := "SELECT TABLE_NAME FROM	information_schema.TABLES WHERE	table_schema = 'kyerp'	AND substr(TABLE_NAME,1,4) ='" + preFix + "'"
-	tbs, err := eb.GetArray(sql)
-	if err != nil {
-		return
-	}
-	for _, val := range tbs {
-		tb := val.String()
-		_, err := tx.Table(tb).Delete(table+"_id", id)
-		if err == nil {
-			continue
-		}
-	}
-	return err
 }

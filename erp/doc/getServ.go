@@ -7,25 +7,32 @@ import (
 
 	"github.com/gogf/gf/container/gvar"
 	"github.com/gogf/gf/database/gdb"
-	"github.com/gogf/gf/frame/g"
 )
+
+type ResponseGet struct {
+	NextID *gvar.Var             `json:"nextID"`
+	PreID  *gvar.Var             `json:"preID"`
+	Forms  map[string]gdb.Record `json:"forms"`
+	Tables map[string]gdb.Result `json:"tables"`
+}
 
 //getData
 /**
 获取明细
 */
-func (ctrl *doc) getData(docType string, docID int) (data map[string]interface{}, err error) {
+func (ctrl *doc) getData(docType string, docID int) (data *ResponseGet, err error) {
 	tb, fks, subs, err := boot.ErpDB.GeTbFkSub(docType, docID)
 	if err != nil {
 		return nil, err
 	}
-	data = g.Map{}
+	data = &ResponseGet{}
 	if tb != nil {
+		data.Forms = make(map[string]gdb.Record)
 		if docID == 0 {
 			no, _ := MakeDocNewNo(docType)
 			tb["no"] = gvar.New(no, true)
 		}
-		data["form"] = tb
+		data.Forms[docType] = tb
 	}
 	tbs := make(map[string]gdb.Result)
 	if fks != nil {
@@ -37,28 +44,25 @@ func (ctrl *doc) getData(docType string, docID int) (data map[string]interface{}
 		}
 	}
 	if len(tbs) > 0 {
-		data["tables"] = tbs
+		data.Tables = tbs
 	}
-	var nextID, preID *g.Var
 	if docID != 0 {
-		nextID, err = boot.ErpDB.Table(docType).Where("id>?", docID).Value("min(id)")
+		data.NextID, err = boot.ErpDB.Table(docType).Where("id>?", docID).Value("min(id)")
 		if err != nil {
 			return nil, err
 		}
-		preID, err = boot.ErpDB.Table(docType).Where("id<?", docID).Value("max(id)")
+		data.PreID, err = boot.ErpDB.Table(docType).Where("id<?", docID).Value("max(id)")
 
 		if err != nil {
 			return nil, err
 		}
 	} else {
-		preID, err = boot.ErpDB.Table(docType).Value("max(id)")
+		data.PreID, err = boot.ErpDB.Table(docType).Value("max(id)")
 		if err != nil {
 			return nil, err
 		}
 	}
-	data["nextId"] = nextID
-	data["preId"] = preID
-	return
+	return data, err
 }
 
 func MakeDocNewNo(docType string) (newNo string, err error) {

@@ -8,14 +8,14 @@ package internal
 
 // Vr is the golang structure for table vr.
 type Vr struct {
-    VrId         int    `orm:"vr_id,primary"  json:"vr_id"`          //   
-    VrNo         string `orm:"vr_no,unique"   json:"vr_no"`          //   
-    VrDate       string `orm:"vr_date"        json:"vr_date"`        //   
-    VrType       string `orm:"vr_type"        json:"vr_type"`        //   
-    VrNote       string `orm:"vr_note"        json:"vr_note"`        //   
-    State        string `orm:"state"          json:"state"`          //   
-    CreateDate   string `orm:"create_date"    json:"create_date"`    //   
-    CreateUserId string `orm:"create_user_id" json:"create_user_id"` //   
-    CheckDate    string `orm:"check_date"     json:"check_date"`     //   
-    CheckUserId  string `orm:"check_user_id"  json:"check_user_id"`  //   
+    Vid          uint   `orm:"vid,primary"    json:"vid"`          //   
+    Vno          string `orm:"vno,unique"     json:"vno"`          //   
+    VrDate       string `orm:"vr_date"        json:"vrDate"`       //   
+    VrNote       string `orm:"vr_note"        json:"vrNote"`       //   
+    CreateDate   string `orm:"create_date"    json:"createDate"`   //   
+    CheckDate    string `orm:"check_date"     json:"checkDate"`    //   
+    CreateUserId uint   `orm:"create_user_id" json:"createUserId"` //   
+    CheckUserId  uint   `orm:"check_user_id"  json:"checkUserId"`  //   
+    VtypeId      uint   `orm:"vtype_id"       json:"vtypeId"`      //   
+    StateId      uint   `orm:"state_id"       json:"stateId"`      //   
 }

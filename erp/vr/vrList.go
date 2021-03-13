@@ -1,4 +1,4 @@
-package doc
+package vr
 
 import (
 	"gfast/erp/boot"
@@ -10,20 +10,20 @@ import (
 	"github.com/gogf/gf/net/ghttp"
 )
 
-// DocList API管理对象
-var DocList = &docList{}
+// VrList API管理对象
+var VrList = &vrList{}
 
-type docList struct {
+type vrList struct {
 	name string
 }
 
-type DocListParam struct {
+type VrListParam struct {
 }
 
 //controller
-func (ctrl *docList) Get(r *ghttp.Request) {
-	docType := r.GetString("type")
-	data, err := ctrl.getData(docType)
+func (ctrl *vrList) Get(r *ghttp.Request) {
+	vrType := r.GetString("type")
+	data, err := ctrl.getData(vrType)
 	if err != nil {
 		response.FailJson(true, r, err.Error())
 	}
@@ -35,8 +35,10 @@ func (ctrl *docList) Get(r *ghttp.Request) {
 获取明细
 */
 
-func (ctrl *docList) getData(docType string) (data interface{}, err error) {
-	mod := boot.ErpDB.Table(docType)
+func (ctrl *vrList) getData(vrType string) (data interface{}, err error) {
+
+	mod := boot.ErpDB.Model("vr")
+
 	r, err := mod.All()
 	if err != nil {
 		g.Log().Error(err)
@@ -46,7 +48,7 @@ func (ctrl *docList) getData(docType string) (data interface{}, err error) {
 
 	data = g.Map{
 		"tables": g.Map{
-			docType: r,
+			vrType: r,
 		},
 	}
 	return
