@@ -28,18 +28,18 @@ func (ctrl *dict) Get(r *ghttp.Request) {
 获取明细
 */
 type SysDict struct {
-	ID       int
-	DictName string
-	DictType string
-	Data     []DictData
+	ID       int        `orm:"id,primary"   json:"id"`
+	DictName string     `orm:"dict_name"   json:"dictName"`
+	DictType string     `orm:"dict_type"   json:"dictType"`
+	Data     []DictData ` json:"data"`
 }
 
 type DictData struct {
-	DictCode  int
-	DictLabel string
-	DictValue string
-	IsDefault bool
-	ReMark    string
+	DictCode  int    `orm:"dict_code"   json:"dictCode"`
+	DictLabel string `orm:"dict_label"   json:"dictLabel"`
+	DictValue string `orm:"dict_value"   json:"dictValue"`
+	IsDefault bool   `orm:"is_default"   json:"isDefault"`
+	ReMark    string `orm:"remark"   json:"remark"`
 }
 
 func (ctrl *dict) getData() (data []SysDict, err error) {
@@ -52,7 +52,7 @@ func (ctrl *dict) getData() (data []SysDict, err error) {
 	}
 	for k, v := range dicts {
 		dictData := ([]DictData)(nil)
-		err = g.DB().Model("sys_dict_data").Where("dict_type", v.DictType).Structs(&dictDatas)
+		err = g.DB().Model("sys_dict_data").Where("dict_type", v.DictType).Structs(&dictData)
 		if err != nil {
 			continue
 		}

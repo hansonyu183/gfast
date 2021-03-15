@@ -12,9 +12,8 @@ type VrMain struct {
 	BillDate     string  `orm:"bill_date"       json:"billDate"`     //
 	BillMonth    string  `orm:"bill_month"      json:"billMonth"`    //
 	BillLmtDate  string  `orm:"bill_lmt_date"   json:"billLmtDate"`  //
-	BillNote     string  `orm:"bill_note"       json:"billNote"`     //
+	Note         string  `orm:"note"       json:"note"`              //
 	Amo          float64 `orm:"amo"             json:"amo"`          //
-	OrderDate    string  `orm:"order_date"      json:"orderDate"`    //
 	TranDate     string  `orm:"tran_date"       json:"tranDate"`     //
 	TranPrice    float64 `orm:"tran_price"      json:"tranPrice"`    //
 	PrintPackNum float64 `orm:"print_pack_num"  json:"printPackNum"` //

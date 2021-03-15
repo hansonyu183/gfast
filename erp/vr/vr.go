@@ -70,9 +70,8 @@ func (ctrl *vr) Patch(r *ghttp.Request) {
 
 //controller
 func (ctrl *vr) Delete(r *ghttp.Request) {
-	vrType := r.GetString("type")
 	vID := r.GetInt("id")
-	err := ctrl.del(vrType, vID)
+	err := ctrl.del(vID)
 	if err != nil {
 		response.FailJson(true, r, err.Error())
 	}

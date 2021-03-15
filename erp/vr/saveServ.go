@@ -30,7 +30,7 @@ func (ctrl *vr) insertData(vrType string, data *PostData) (dID uint, err error) 
 		if _, err = tx.Model("vr").Insert(data.Vr); err != nil {
 			return err
 		}
-		if data.VrMain == nil {
+		if data.VrMain != nil {
 			data.VrMain.VID = vid
 			if _, err = tx.Model("vr_main").Insert(data.VrMain); err != nil {
 				return err
@@ -79,7 +79,7 @@ func (ctrl *vr) updateData(vrType string, vrID uint, data *PostData) (dID uint, 
 		if _, err = tx.Model("vr").Where("id", vrID).Update(data.Vr); err != nil {
 			return err
 		}
-		if data.VrMain == nil {
+		if data.VrMain != nil {
 			if _, err = tx.Model("vr_main").Where("vid", vrID).Update(data.VrMain); err != nil {
 				return err
 			}

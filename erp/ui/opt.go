@@ -15,7 +15,7 @@ var optWhere = "state_id=4"
 var optCols = map[string]string{
 	"eba":     "id,no,name,py,tel,address,ebasq_id,emp_id,note",
 	"sup":     fields,
-	"res":     "id,no,name,py,model",
+	"res":     "id,no,name,py,model,pack_num,reskind_id",
 	"emp":     fields,
 	"account": fields,
 	"subject": fields,
@@ -25,7 +25,7 @@ var optCols = map[string]string{
 	"state":   "*",
 	"act":     "*",
 	"unit":    fields,
-	"ebasq":   fields,
+	"ebasq":   "id,no,name,py,num,price",
 	"invres":  "id,no,name,py,model",
 	"inveba":  fields,
 }
