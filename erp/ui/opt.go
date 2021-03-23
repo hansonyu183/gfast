@@ -13,9 +13,9 @@ import (
 var fields = "id,no,name,py"
 var optWhere = "state_id=4"
 var optCols = map[string]string{
-	"eba":     "id,no,name,py,tel,address,ebasq_id,emp_id,note",
+	"eba":     "id,no,name,py,tel,address,ebasq_id,emp_id,note,plus_price,hk_price,tran_price",
 	"sup":     fields,
-	"res":     "id,no,name,py,model,pack_num,reskind_id",
+	"res":     "id,no,name,py,model,per_pack_num,reskind_id,guide_price",
 	"emp":     fields,
 	"account": fields,
 	"subject": fields,
@@ -28,6 +28,8 @@ var optCols = map[string]string{
 	"ebasq":   "id,no,name,py,num,price",
 	"invres":  "id,no,name,py,model",
 	"inveba":  fields,
+	"res_bom": "*",
+	"eba_bom": "*",
 }
 
 // Opt API管理对象
@@ -43,12 +45,15 @@ type OptParam struct {
 //controller
 func (ctrl *opt) Get(r *ghttp.Request) {
 	optName := r.GetString("name")
+	optID := r.GetInt("id")
 	var data interface{}
 	var err error
-	if optName == "" {
-		data, err = ctrl.getAllOption()
+	if optName == "all" {
+		data, err = ctrl.getAllOpt()
+	} else if optID == 0 {
+		data, err = ctrl.getOpt(optName)
 	} else {
-		data, err = ctrl.getOneOption(optName)
+		data, err = ctrl.getOptByID(optName, optID)
 	}
 	if err != nil {
 		response.FailJson(true, r, err.Error())
@@ -60,7 +65,7 @@ func (ctrl *opt) Get(r *ghttp.Request) {
 /**
 获取明细
 */
-func (ctrl *opt) getAllOption() (data map[string]interface{}, er error) {
+func (ctrl *opt) getAllOpt() (data map[string]interface{}, er error) {
 	data = g.Map{}
 	for k, v := range optCols {
 		r, err := boot.ErpDB.Model(k).Fields(v).Where(optWhere).All()
@@ -73,6 +78,10 @@ func (ctrl *opt) getAllOption() (data map[string]interface{}, er error) {
 	return
 }
 
-func (ctrl *opt) getOneOption(optName string) (data gdb.Result, err error) {
+func (ctrl *opt) getOpt(optName string) (data gdb.Result, err error) {
 	return boot.ErpDB.Model(optName).Fields(optCols[optName]).Where(optWhere).All()
+}
+
+func (ctrl *opt) getOptByID(optName string, optID int) (data gdb.Record, err error) {
+	return boot.ErpDB.Model(optName).Fields(optCols[optName]).Where(optWhere).Where("id", optID).One()
 }

@@ -71,7 +71,7 @@ func getNewVr(vtype string) (data *ResponseGet, err error) {
 	var vtypeID *gvar.Var
 	if vtypeID, err = boot.ErpDB.Model("vtype").Fields("id").Where("no", vtype).Value(); err != nil {
 		return nil, err
-	}/*
+	}
 	var vrMain gdb.Record
 	var vrNum gdb.Record
 	var vrAmo gdb.Record
@@ -84,24 +84,28 @@ func getNewVr(vtype string) (data *ResponseGet, err error) {
 	if vrNum, err = boot.ErpDB.GetTbDefaultData("vr_num"); err != nil {
 		return nil, err
 	}
-	//vrNum["id"] = gvar.New(1, true)
+	vrNum["id"] = gvar.New(1, true)
+
 	if vrAmo, err = boot.ErpDB.GetTbDefaultData("vr_amo"); err != nil {
 		return nil, err
 	}
-	//vrAmo["id"] = gvar.New(1, true)
-	/*if vrPf, err = boot.ErpDB.GetTbDefaultData("vr_pf"); err != nil {
+	vrAmo["id"] = gvar.New(1, true)
+
+	if vrPf, err = boot.ErpDB.GetTbDefaultData("vr_pf"); err != nil {
 		return nil, err
 	}
 	vrPf["id"] = gvar.New(1, true)
-	vrPf["iid"] = gvar.New(1, true)*/
+	vrPf["iid"] = gvar.New(1, true)
+	//vrPf["id"] = gvar.New(1, true)
+	//vrPf["iid"] = gvar.New(1, true)*/
 
 	vr := make(gdb.Record)
 	data = &ResponseGet{
 		Vr:     vr,
-	//	VrMain: vrMain,
-		//VrNum:  []gdb.Record{vrNum},
-		//VrAmo:  []gdb.Record{vrAmo},
-		//VrPf:   []gdb.Record{vrPf},
+		VrMain: vrMain,
+		VrNum:  []gdb.Record{vrNum},
+		VrAmo:  []gdb.Record{vrAmo},
+		VrPf:   []gdb.Record{vrPf},
 	}
 	var no, toDay string
 	if no, toDay, err = MakeVrNewNo(vtype); err != nil {
@@ -111,6 +115,7 @@ func getNewVr(vtype string) (data *ResponseGet, err error) {
 	if data.PreID, err = boot.ErpDB.Model("vr").Where("vtype_id", vtypeID).Value("max(id)"); err != nil {
 		return nil, err
 	}
+	data.Vr["id"] = gvar.New(0, true)
 	data.Vr["no"] = gvar.New(no, true)
 	data.Vr["date"] = gvar.New(toDay, true)
 

@@ -25,7 +25,7 @@ func init() {
 		group.PATCH("/{.struct}/{.method}", api.NewWork())
 
 		group.REST("/ui/desc/:user", ui.Desc)
-		group.REST("/ui/opt/*name", ui.Opt)
+		group.REST("/ui/opt/:name/*id", ui.Opt)
 		group.REST("/ui/auth/:user", ui.Auth)
 		group.REST("/ui/dict/", ui.Dict)
 

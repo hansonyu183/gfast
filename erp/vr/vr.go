@@ -22,7 +22,7 @@ func (ctrl *vr) Get(r *ghttp.Request) {
 	if err != nil {
 		response.FailJson(true, r, err.Error())
 	}
-	response.SusJson(true, r, "成功", data)
+	response.SusJson(true, r, "", data)
 }
 
 type PostData struct {
@@ -52,7 +52,7 @@ func (ctrl *vr) Post(r *ghttp.Request) {
 	if err != nil {
 		response.FailJson(true, r, err.Error())
 	}
-	response.SusJson(true, r, "成功", effectID)
+	response.SusJson(true, r, "", effectID)
 }
 
 //controller
@@ -65,7 +65,7 @@ func (ctrl *vr) Patch(r *ghttp.Request) {
 	if err = ctrl.handelAct(vrType, vID, actID); err != nil {
 		response.FailJson(true, r, err.Error())
 	}
-	response.SusJson(true, r, "成功")
+	response.SusJson(true, r, "")
 }
 
 //controller
@@ -75,5 +75,5 @@ func (ctrl *vr) Delete(r *ghttp.Request) {
 	if err != nil {
 		response.FailJson(true, r, err.Error())
 	}
-	response.SusJson(true, r, "成功")
+	response.SusJson(true, r, "")
 }
